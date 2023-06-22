@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const NavBar = () => {
   return (
-    <header className="p-4 flex items-center justify-between">
+    <header className="flex items-center justify-between">
       <a href="" className="flex items-center gap-1">
         <SentimentSatisfiedAltIcon />
         <span className="font-bold text-xl">Airnb</span>
