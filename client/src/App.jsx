@@ -3,6 +3,10 @@ import "./App.css";
 import Indexpage from "./components/Indexpage";
 import LoginPage from "./components/LoginPage";
 import Layout from "./components/Layout";
+import RegisterPage from "./components/RegisterPage";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:3000";
 function App() {
   return (
     <BrowserRouter>
@@ -10,6 +14,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Indexpage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
