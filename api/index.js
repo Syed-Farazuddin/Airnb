@@ -6,6 +6,9 @@ const User = require("./models/Users.jsx");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const imageDownloader = require("image-downloader");
+const multer = require("multer");
+const fs = require("fs");
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log("database connected to server");
@@ -15,6 +18,7 @@ const salt = bcrypt.genSaltSync(10);
 
 const app = express();
 app.use(express.json());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
   cors({
     credentials: true,
@@ -52,18 +56,52 @@ app.post("/login", async (req, res) => {
     if (passOk) {
       const token = jwt.sign({ id: userDoc[0]._id }, "sadfihahfousaghuo");
       res.cookie("token", token).json(userDoc[0]);
-      //   res.json(userDoc);
     } else {
       res.status(422).json("Wrong Password");
     }
   }
 });
 
+app.post("/logout", (req, res) => {
+  alert("Successfully logged out!");
+  res.json("logged out");
+});
+
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
-  // console.log(token);
   res.json("Profile details");
-  // res.json("token", token);
+});
+
+app.post("/upload-by-link", async (req, res) => {
+  const { link } = req.body;
+  const newName = "photo" + Date.now() + ".jpg";
+  imageDownloader
+    .image({
+      url: link,
+      dest: __dirname + "/uploads/" + newName,
+    })
+    .then(({ filename }) => {
+      console.log("Saved to ", filename);
+    })
+    .catch((e) => {
+      console.log("Error at imageDownloader: ", e);
+    });
+  res.json(newName);
+});
+
+const photosUploadMiddleware = multer({ dest: "uploads/" });
+
+app.post("/upload", photosUploadMiddleware.array("photos", 30), (req, res) => {
+  const uploadedFiles = [];
+  for (let i = 0; i < req.files.length; i++) {
+    const { path, originalname } = req.files[i];
+    const parts = originalname.split(".");
+    const ext = parts[parts.length - 1];
+    const newPath = path + "." + ext;
+    fs.renameSync(path, newPath);
+    uploadedFiles.push(newPath.replace("uploads", ""));
+  }
+  res.json(uploadedFiles);
 });
 
 app.listen(3000, () => {

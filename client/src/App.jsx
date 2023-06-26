@@ -7,7 +7,7 @@ import axios from "axios";
 import { UserContextProvider } from "./UserContext";
 import Account from "./components/Account";
 
-axios.defaults.baseURL = "http://127.0.0.1:3000";
+axios.defaults.baseURL = "//127.0.0.1:3000";
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -20,8 +20,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/account/:subpage?" element={<Account />} />
-            {/* <Route path="/account/bookings" element={<Account />} />
-            <Route path="/account/places" element={<Account />} /> */}
+            <Route path="/account/:subpage/:action" element={<Account />} />
           </Route>
         </Routes>
       </BrowserRouter>

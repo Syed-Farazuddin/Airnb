@@ -15,7 +15,8 @@ const RegisterPage = () => {
         password,
       });
       alert("Registration successful. Now you can log in.");
-    } catch {
+    } catch (e) {
+      console.log(e);
       alert("Registration failed");
     }
   };
